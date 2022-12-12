@@ -9,7 +9,7 @@ In the main project folder, please create these two files:
 .env.development
 
 The content of .env.test should be as follows:
-PGDATABASE="nc_news_test"
+PGDATABASE=nc_news_test
 
 And the content of .env.development:
-PGDATABASE="nc_news"
+PGDATABASE=nc_news
