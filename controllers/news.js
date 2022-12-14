@@ -2,6 +2,7 @@ const {
 	selectTopics,
 	selectArticles,
 	selectArticlesById,
+	selectArticleComments,
 } = require('../models/news');
 
 exports.getTopics = (req, res) => {
@@ -16,11 +17,20 @@ exports.getArticles = (req, res) => {
 	});
 };
 
-exports.getArticlesById = (req, res) => {
+exports.getArticlesById = (req, res, next) => {
 	const { article_id } = req.params;
-	selectArticlesById(article_id).then((returnedArticle) => {
-		returnedArticle === undefined
-			? res.status(404).send({ msg: 'Route not found' })
-			: res.status(200).send(returnedArticle);
-	});
+	selectArticlesById(article_id)
+		.then((returnedArticle) => {
+			res.status(200).send(returnedArticle);
+		})
+		.catch((err) => next(err));
+};
+
+exports.getArticleComments = (req, res, next) => {
+	const { article_id } = req.params;
+	selectArticleComments(article_id)
+		.then((returnedComments) => {
+			res.status(200).send(returnedComments);
+		})
+		.catch((err) => next(err));
 };

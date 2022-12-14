@@ -82,7 +82,7 @@ describe('GET/api/articles', () => {
 	});
 });
 
-describe.only('GET/api/articles:/article_id', () => {
+describe('GET/api/articles:/article_id', () => {
 	test('responds with a 200 status code, and an article object matching the article id requested', () => {
 		const ID = 3;
 		return request(app)
@@ -102,16 +102,54 @@ describe.only('GET/api/articles:/article_id', () => {
 				);
 			});
 	});
-	test('responds with a 404 status code an an error object when passed an invalid article id', () => {
+	test('responds with a 400 status code an an error object when passed an invalid article id', () => {
 		const ID = 2000;
 		return request(app)
 			.get(`/api/articles/${ID}`)
-			.expect(404)
+			.expect(400)
 			.then(({ body }) => {
 				expect(body).toBeInstanceOf(Object);
 				expect(body).toEqual(
 					expect.objectContaining({
-						msg: 'Route not found',
+						msg: 'Article does not exist',
+					})
+				);
+			});
+	});
+});
+
+describe('GET/api/articles/:article_id/comments', () => {
+	test('responds with a 200 status code and returns an array of ', () => {
+		const ID = 1;
+		return request(app)
+			.get(`/api/articles/${ID}/comments`)
+			.expect(200)
+			.then(({ body }) => {
+				expect(body).toBeInstanceOf(Array);
+				body.forEach((comment) => {
+					expect(comment).toEqual(
+						expect.objectContaining({
+							comment_id: expect.any(Number),
+							body: expect.any(String),
+							article_id: expect.any(Number),
+							author: expect.any(String),
+							votes: expect.any(Number),
+							created_at: expect.any(String),
+						})
+					);
+				});
+			});
+	});
+	test('responds with a 400 status code if passed an invalid article_id', () => {
+		const ID = 2456;
+		return request(app)
+			.get(`/api/articles/${ID}/comments`)
+			.expect(400)
+			.then(({ body }) => {
+				expect(body).toBeInstanceOf(Object);
+				expect(body).toEqual(
+					expect.objectContaining({
+						msg: 'Article ID does not exist',
 					})
 				);
 			});
