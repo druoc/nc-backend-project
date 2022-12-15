@@ -1,5 +1,4 @@
 const db = require('../db/connection');
-const { commentData } = require('../db/data/test-data');
 
 exports.selectTopics = () => {
 	return db.query('SELECT * FROM topics;').then(({ rows: topicsData }) => {
@@ -45,5 +44,23 @@ exports.selectArticleComments = (article_id) => {
 				});
 			}
 			return commentData;
+		});
+};
+
+exports.addComment = (comment) => {
+	const { username, body, article_id } = comment;
+	if (!username || !body) {
+		return Promise.reject({
+			status: 400,
+			msg: 'Incomplete request',
+		});
+	}
+	return db
+		.query(
+			'INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;',
+			[username, body, article_id]
+		)
+		.then(({ rows }) => {
+			return rows;
 		});
 };

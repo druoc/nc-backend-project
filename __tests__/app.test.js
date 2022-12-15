@@ -119,7 +119,7 @@ describe('GET/api/articles:/article_id', () => {
 });
 
 describe('GET/api/articles/:article_id/comments', () => {
-	test('responds with a 200 status code and returns an array of ', () => {
+	test('responds with a 200 status code and returns an array of comments with the relevant article_id', () => {
 		const ID = 1;
 		return request(app)
 			.get(`/api/articles/${ID}/comments`)
@@ -150,6 +150,48 @@ describe('GET/api/articles/:article_id/comments', () => {
 				expect(body).toEqual(
 					expect.objectContaining({
 						msg: 'Article ID does not exist',
+					})
+				);
+			});
+	});
+});
+
+describe('POST/api/articles/:article_id/comments', () => {
+	test('responds with a 201 status code and returns the comment posted by the user', () => {
+		const ID = 3;
+		const comment = {
+			username: 'butter_bridge',
+			body: 'I agree dude',
+		};
+		return request(app)
+			.post(`/api/articles/${ID}/comments`)
+			.send(comment)
+			.expect(201)
+			.then(({ body }) => {
+				expect(body[0]).toBeInstanceOf(Object);
+				expect(body[0]).toEqual(
+					expect.objectContaining({
+						comment_id: expect.any(Number),
+						body: expect.any(String),
+						article_id: expect.any(Number),
+						author: expect.any(String),
+						votes: expect.any(Number),
+						created_at: expect.any(String),
+					})
+				);
+			});
+	});
+	test('responds with a 400 status code and an error message if no username or body is passed', () => {
+		const ID = 3;
+		return request(app)
+			.post(`/api/articles/${ID}/comments`)
+			.send()
+			.expect(400)
+			.then(({ body }) => {
+				expect(body).toBeInstanceOf(Object);
+				expect(body).toEqual(
+					expect.objectContaining({
+						msg: 'Incomplete request',
 					})
 				);
 			});
