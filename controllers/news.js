@@ -2,7 +2,7 @@ const {
 	selectTopics,
 	selectArticlesById,
 	selectArticleComments,
-
+	addComment,
 } = require('../models/news');
 
 exports.getTopics = (req, res) => {
@@ -11,7 +11,7 @@ exports.getTopics = (req, res) => {
 	});
 };
 
-
+exports.getArticles = (req, res) => {
 	const { article_id } = req.params;
 	selectArticlesById(article_id)
 		.then((returnedArticle) => {

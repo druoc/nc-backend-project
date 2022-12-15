@@ -12,7 +12,7 @@ afterAll(() => {
 	if (db.end) db.end();
 });
 
-describe('GET/api/topics', () => {
+describe.only('GET/api/topics', () => {
 	test('responds with a 200 status code and an array of topic objects', () => {
 		return request(app)
 			.get('/api/topics')
@@ -43,7 +43,6 @@ describe('GET/api/topics', () => {
 			});
 	});
 });
-
 
 describe('GET/api/articles:/article_id', () => {
 	test('responds with a 200 status code, and an article object matching the article id requested', () => {
