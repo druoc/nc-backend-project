@@ -1,9 +1,8 @@
 const {
 	selectTopics,
-	selectArticles,
 	selectArticlesById,
 	selectArticleComments,
-	addComment,
+
 } = require('../models/news');
 
 exports.getTopics = (req, res) => {
@@ -12,13 +11,7 @@ exports.getTopics = (req, res) => {
 	});
 };
 
-exports.getArticles = (req, res) => {
-	selectArticles().then((returnedArticles) => {
-		res.status(200).send({ articles: returnedArticles });
-	});
-};
 
-exports.getArticlesById = (req, res, next) => {
 	const { article_id } = req.params;
 	selectArticlesById(article_id)
 		.then((returnedArticle) => {
