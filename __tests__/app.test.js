@@ -12,7 +12,7 @@ afterAll(() => {
 	if (db.end) db.end();
 });
 
-describe.only('GET/api/topics', () => {
+describe('GET/api/topics', () => {
 	test('responds with a 200 status code and an array of topic objects', () => {
 		return request(app)
 			.get('/api/topics')
