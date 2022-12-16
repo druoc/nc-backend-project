@@ -5,6 +5,7 @@ const {
 	selectArticleComments,
 	addComment,
 	updateArticleVote,
+	fetchUsers,
 } = require('../models/news');
 
 exports.getTopics = (req, res) => {
@@ -64,4 +65,10 @@ exports.patchArticleVote = (req, res, next) => {
 				})
 				.catch((err) => next(err))
 		: res.status(400).send({ msg: 'Please provide a votes value' });
+};
+
+exports.getUsers = (req, res, next) => {
+	fetchUsers().then((users) => {
+		res.status(200).send({ users });
+	});
 };
