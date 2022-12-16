@@ -263,3 +263,37 @@ describe('PATCH/api/articles/:article', () => {
 			});
 	});
 });
+
+describe('GET/api/users', () => {
+	test('returns a 200 status code and an array of user objects', () => {
+		return request(app)
+			.get('/api/users')
+			.expect(200)
+			.then(({ body }) => {
+				const { users } = body;
+				expect(users).toBeInstanceOf(Array);
+				users.forEach((user) => {
+					expect(user).toEqual(
+						expect.objectContaining({
+							username: expect.any(String),
+							name: expect.any(String),
+							avatar_url: expect.any(String),
+						})
+					);
+				});
+			});
+	});
+	test('returns a 404 error if an incorrect path is accessed', () => {
+		return request(app)
+			.get('/api/user')
+			.expect(404)
+			.then(({ body }) => {
+				expect(body).toBeInstanceOf(Object);
+				expect(body).toEqual(
+					expect.objectContaining({
+						msg: 'Route not found',
+					})
+				);
+			});
+	});
+});
