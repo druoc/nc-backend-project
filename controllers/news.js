@@ -4,18 +4,23 @@ const {
 	selectArticlesById,
 	selectArticleComments,
 	addComment,
+	updateArticleVote,
 } = require('../models/news');
 
 exports.getTopics = (req, res) => {
-	selectTopics().then((returnedTopics) => {
-		res.status(200).send(returnedTopics);
-	});
+	selectTopics()
+		.then((returnedTopics) => {
+			res.status(200).send(returnedTopics);
+		})
+		.catch((err) => next(err));
 };
 
 exports.getArticles = (req, res) => {
-	selectArticles().then((returnedArticles) => {
-		res.status(200).send({ articles: returnedArticles });
-	});
+	selectArticles()
+		.then((returnedArticles) => {
+			res.status(200).send({ articles: returnedArticles });
+		})
+		.catch((err) => next(err));
 };
 
 exports.getArticlesById = (req, res, next) => {
@@ -47,4 +52,16 @@ exports.postComment = (req, res, next) => {
 			res.status(201).send(returnedComment);
 		})
 		.catch((err) => next(err));
+};
+
+exports.patchArticleVote = (req, res, next) => {
+	const { article_id } = req.params;
+	const { inc_votes } = req.body;
+	return inc_votes
+		? updateArticleVote(inc_votes, article_id)
+				.then((returnedArticle) => {
+					res.status(200).send(returnedArticle);
+				})
+				.catch((err) => next(err))
+		: res.status(400).send({ msg: 'Please provide a votes value' });
 };
