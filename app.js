@@ -29,7 +29,11 @@ app.all('/*', (req, res) => {
 
 //error handlers
 app.use((err, req, res, next) => {
-	res.status(err.status).send({ msg: err.msg });
+	if (err.code === '22P02') {
+		res.status(400).send({ msg: 'Please enter a valid comment id' });
+	} else {
+		res.status(err.status).send({ msg: err.msg });
+	}
 });
 
 module.exports = app;

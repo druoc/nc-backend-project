@@ -94,7 +94,7 @@ exports.deleteComment = (comment_id) => {
 			if (rows.length === 0) {
 				return Promise.reject({
 					status: 404,
-					msg: 'Please enter a valid comment id',
+					msg: 'Comment id not found',
 				});
 			}
 			return rows;

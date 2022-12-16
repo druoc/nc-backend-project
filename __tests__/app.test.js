@@ -309,11 +309,24 @@ describe('DELETE/api/comments/:comment_id', () => {
 				expect(bodyContent).toBe(undefined);
 			});
 	});
-	test('responds with a 404 status and an error message when an invalid comment_id is passed in the URL', () => {
+	test('responds with a 404 status and an error message when a none-existant comment_id is passed in the URL', () => {
 		const comment_id = 3000;
 		return request(app)
 			.delete(`/api/comments/${comment_id}`)
 			.expect(404)
+			.then(({ body }) => {
+				expect(body).toEqual(
+					expect.objectContaining({
+						msg: 'Comment id not found',
+					})
+				);
+			});
+	});
+	test('responds with a 400 status code an an error message when an invald comment_id is passed in the url', () => {
+		const comment_id = 'magicCheese';
+		return request(app)
+			.delete(`/api/comments/${comment_id}`)
+			.expect(400)
 			.then(({ body }) => {
 				expect(body).toEqual(
 					expect.objectContaining({
