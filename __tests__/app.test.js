@@ -297,3 +297,29 @@ describe('GET/api/users', () => {
 			});
 	});
 });
+
+describe('DELETE/api/comments/:comment_id', () => {
+	test('responds with a 204 status and no content within the return body', () => {
+		const comment_id = 3;
+		return request(app)
+			.delete(`/api/comments/${comment_id}`)
+			.expect(204)
+			.then(({ body }) => {
+				const { bodyContent } = body;
+				expect(bodyContent).toBe(undefined);
+			});
+	});
+	test('responds with a 404 status and an error message when an invalid comment_id is passed in the URL', () => {
+		const comment_id = 3000;
+		return request(app)
+			.delete(`/api/comments/${comment_id}`)
+			.expect(404)
+			.then(({ body }) => {
+				expect(body).toEqual(
+					expect.objectContaining({
+						msg: 'Please enter a valid comment id',
+					})
+				);
+			});
+	});
+});
