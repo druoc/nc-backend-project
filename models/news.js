@@ -64,3 +64,17 @@ exports.addComment = (comment) => {
 			return rows;
 		});
 };
+
+exports.updateArticleVote = (inc_votes, article_id) => {
+	return db
+		.query(
+			'UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING*;',
+			[inc_votes, article_id]
+		)
+		.then(({ rows: [returnedArticle] }) => {
+			if (returnedArticle === undefined) {
+				return Promise.reject({ status: 404, msg: 'Article does not exist' });
+			}
+			return returnedArticle;
+		});
+};

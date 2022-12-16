@@ -3,6 +3,7 @@ const app = require('../app');
 const db = require('../db/connection');
 const seed = require('../db/seeds/seed');
 const testData = require('../db/data/test-data');
+const { string } = require('pg-format');
 
 beforeEach(() => {
 	return seed(testData);
@@ -192,6 +193,71 @@ describe('POST/api/articles/:article_id/comments', () => {
 				expect(body).toEqual(
 					expect.objectContaining({
 						msg: 'Incomplete request',
+					})
+				);
+			});
+	});
+});
+
+describe('PATCH/api/articles/:article', () => {
+	test('responds with a 200 status and the article object with updated vote count', () => {
+		return request(app)
+			.put('/api/articles/1')
+			.send({ inc_votes: 10 })
+			.expect(200)
+			.then(({ body }) => {
+				expect(body).toEqual(
+					expect.objectContaining({
+						article_id: expect.any(Number),
+						title: expect.any(String),
+						topic: expect.any(String),
+						author: expect.any(String),
+						body: expect.any(String),
+						created_at: expect.any(String),
+						votes: 110,
+					})
+				);
+			});
+	});
+	test('returns a 400 status error and error message if no inc_votes object is sent with the request', () => {
+		return request(app)
+			.put('/api/articles/1')
+			.send()
+			.expect(400)
+			.then(({ body }) => {
+				expect(body).toBeInstanceOf(Object);
+				expect(body).toEqual(
+					expect.objectContaining({
+						msg: 'Please provide a votes value',
+					})
+				);
+			});
+	});
+
+	test('returns a 400 status error and error message if inc_votes is equal to 0', () => {
+		return request(app)
+			.put('/api/articles/1')
+			.send({ inc_votes: 0 })
+			.expect(400)
+			.then(({ body }) => {
+				expect(body).toBeInstanceOf(Object);
+				expect(body).toEqual(
+					expect.objectContaining({
+						msg: 'Please provide a votes value',
+					})
+				);
+			});
+	});
+	test('returns a 404 status and an error if a path to a non-existant article is provided', () => {
+		return request(app)
+			.put('/api/articles/200')
+			.send({ inc_votes: 20 })
+			.expect(404)
+			.then(({ body }) => {
+				expect(body).toBeInstanceOf(Object);
+				expect(body).toEqual(
+					expect.objectContaining({
+						msg: 'Article does not exist',
 					})
 				);
 			});
